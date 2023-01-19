@@ -2,7 +2,7 @@
 import LeftMenu from "./components/LeftMenu.vue";
 import CentCont from "./components/CentCont.vue";
 import RightCol from "./components/RightCol.vue";
-import {nextTick, onMounted, provide, reactive, ref, watch} from "vue";
+import {computed, nextTick, onMounted, provide, reactive, ref, watch} from "vue";
 
 const placeHolder = ref();
 const leftMenu = ref();
@@ -15,18 +15,29 @@ provide('userAvaRef', userAvaRef);
 onMounted(() => {
       state.value.phWidth = placeHolder.value.$el.offsetWidth;
       state.value.phLeft = placeHolder.value.$el.getBoundingClientRect().left;
-      window.onresize = () => {
+
+      userAvaRef.value = leftMenu.value.profile.userAvatar;
+      //给传入的值赋值
+
+      let ro = new ResizeObserver((entries) => {
         state.value.phWidth = placeHolder.value.$el.offsetWidth;
         state.value.phLeft = placeHolder.value.$el.getBoundingClientRect().left;
-      }
-      userAvaRef.value = leftMenu.value.profile.userAvatar;
+      });
+      ro.observe(placeHolder.value.$el);
+      //响应式更新左边栏的元素宽度与left值
     }
 )
+
+
+let boundingClientRect = computed(() => {
+  return placeHolder.value.$el.getBoundingClientRect();
+})
+
 
 let changeCentPart = (tag) => {
   if (tag) {
     centerCompTag.value = tag;
-    nextTick(()=>{
+    nextTick(() => {
       state.value.phWidth = placeHolder.value.$el.offsetWidth;
       state.value.phLeft = placeHolder.value.$el.getBoundingClientRect().left;
     })
@@ -81,6 +92,20 @@ props无需使用value访问
 /* 1.16 解决了一下右侧滚动条会占用右侧像素造成元素不对齐的问题
 
  */
+/*
+1.17 调整了一下编辑器中 js变量与dom中编辑器的响应式关系
+去除了表明当前单元格使用html或md的bool变量
+测试了新增单元格的功能
+ */
+
+/*1.18
+处理了leftmenu响应式高宽更新不及时的问题
+新增了便捷操作栏 采用固钉的方式
+后续：
+考虑增加一个按钮，用于显示或隐藏单元格序号
+左下角增加草稿箱
+右栏放作者，创作时间等信息
+ */
 </script>
 
 
@@ -91,7 +116,7 @@ props无需使用value访问
         :ref-left="state.phLeft"
         ref="leftMenu"
         class="leftMenu"
-    @switchPage="changeCentPart"
+        @switchPage="changeCentPart"
     >
 
     </LeftMenu>
