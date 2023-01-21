@@ -292,25 +292,39 @@ const copyCube = (index) => {
 
 
 const addUpCube = (index) => {
-  passage.value.splice(index, 0, {
-    "raw": "",
-    "html": "",
-    "uniqueID": tailIndex,
-  })
-  tailIndex++;
-  refreshEDBoxList()
+  if (index >= 0) {
+    passage.value.splice(index, 0, {
+      "raw": "",
+      "html": "",
+      "uniqueID": tailIndex,
+    })
+    tailIndex++;
+    refreshEDBoxList()
+  } else {
+    ElMessage({
+      message: "未选定单元格",
+      type: "error",
+    })
+  }
+
 }
 
 const addDownCube = (index) => {
-  console.log(index);
-  passage.value.splice(index + 1, 0, {
-    "raw": "",
-    "html": "",
-    "uniqueID": tailIndex,
-  })
-  tailIndex++;
-  changeFocus(index + 1)
-  refreshEDBoxList()
+  if (index > 0) {
+    passage.value.splice(index + 1, 0, {
+      "raw": "",
+      "html": "",
+      "uniqueID": tailIndex,
+    })
+    tailIndex++;
+    changeFocus(index + 1)
+    refreshEDBoxList()
+  } else {
+    ElMessage({
+      message: "未选定单元格",
+      type: "error",
+    })
+  }
 }
 
 const deleteCube = (index) => {
@@ -323,6 +337,7 @@ const deleteCube = (index) => {
       type: "error",
     })
   }
+  changeFocus(NaN)
   refreshEDBoxList()
 }
 
