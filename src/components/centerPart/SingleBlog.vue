@@ -70,7 +70,7 @@ const props = defineProps({
   blogProp: Object,
 })
 console.log(props.blogProp)
-let RequesUrl = "http://127.0.0.1:1337"
+let RequesUrl = "http://114.132.153.34:9200"
 let avatarUrl = RequesUrl + props.blogProp.attributes.blog_user.data.attributes.UserAvatar.data.attributes.formats.thumbnail.url;
 let userName = props.blogProp.attributes.blog_user.data.attributes.UserName;
 let userID = props.blogProp.attributes.blog_user.data.attributes.UserID;

@@ -24,6 +24,10 @@ onMounted(() => {
         state.value.phLeft = placeHolder.value.$el.getBoundingClientRect().left;
       });
       ro.observe(placeHolder.value.$el);
+      window.onresize = () => {
+        state.value.phWidth = placeHolder.value.$el.offsetWidth;
+        state.value.phLeft = placeHolder.value.$el.getBoundingClientRect().left;
+      }
       //响应式更新左边栏的元素宽度与left值
     }
 )
@@ -105,6 +109,24 @@ props无需使用value访问
 考虑增加一个按钮，用于显示或隐藏单元格序号
 左下角增加草稿箱
 右栏放作者，创作时间等信息
+ */
+
+/*1.19
+在使用 Vue3 的组件式 API 时，如果你在使用 v-for 渲染列表时对列表进行操作，可能会出现这类错误。这是因为 Vue 会在渲染列表时使用 key 值来标识列表中的每一项。如果你对列表进行修改，Vue 会尝试重用已经存在的元素来渲染新的数据，而不是创建新的元素。如果你没有为每一项设置 key 值或者你的 key 值不能唯一标识列表中的每一项，Vue 就会混淆元素。
+为了避免这类问题，你应该在 v-for 指令中使用 key 值，并确保这些 key 值是唯一的。
+ */
+
+/*1.20
+基本完成单元格操作功能
+部署了服务器端的strapi
+还有序号
+草稿箱
+右侧作者信息栏
+ */
+
+/*1.21
+ResizeObserver可以监控元素的位置高宽变化
+resize事件只能监控窗口（浏览器窗口）的变化
  */
 </script>
 

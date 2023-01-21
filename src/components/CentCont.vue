@@ -1,5 +1,5 @@
 <template>
-  <el-col :span="holderSpan" style="">
+  <el-col :span="holderSpan" style="position: relative;">
     <component :is="ComponentRefs[props.centerComponent]"></component>
   </el-col>
 </template>
