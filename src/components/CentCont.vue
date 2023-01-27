@@ -7,6 +7,7 @@
 <script setup>
 import HitBlog from "./centerPart/HitBlog.vue";
 import EditBlog from "./centerPart/EditBlog.vue";
+import loginRegis from "./centerPart/loginRegis.vue"
 import {computed, ref} from "vue";
 
 const props = defineProps({
@@ -15,7 +16,8 @@ const props = defineProps({
 
 let ComponentRefs = {
   'h': HitBlog,
-  'w': EditBlog
+  'w': EditBlog,
+  'l': loginRegis
 }
 
 const holderSpan = computed(()=>{

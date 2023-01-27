@@ -4,6 +4,7 @@ import CentCont from "./components/CentCont.vue";
 import RightCol from "./components/RightCol.vue";
 import {computed, nextTick, onMounted, provide, reactive, ref, watch} from "vue";
 
+
 const placeHolder = ref();
 const leftMenu = ref();
 const userAvaRef = ref('');
@@ -37,6 +38,11 @@ let boundingClientRect = computed(() => {
   return placeHolder.value.$el.getBoundingClientRect();
 })
 
+
+let checkLoginStatus = () =>{
+  //待补充
+  changeCentPart('l')
+}
 
 let changeCentPart = (tag) => {
   if (tag) {
@@ -128,6 +134,26 @@ props无需使用value访问
 ResizeObserver可以监控元素的位置高宽变化
 resize事件只能监控窗口（浏览器窗口）的变化
  */
+
+/*
+了解了一下jwt进行登陆认证的过程，并且可以通过cookie保存jwt来保持登录态
+因为暂时没有用router，SPA的时候不需要切换页面用不到session
+ */
+
+/*
+做了登陆界面，功能还没写
+ */
+
+/*
+如果模板中有用到计算属性，且计算属性返回ref，需要在模板中加上.value取值
+因为ref被计算属性包裹后不会自动解包
+ */
+
+/*1.26
+模板引用ref时候
+必须要用ref=""
+不能使用:ref绑定，否则要加"''"
+ */
 </script>
 
 
@@ -139,6 +165,7 @@ resize事件只能监控窗口（浏览器窗口）的变化
         ref="leftMenu"
         class="leftMenu"
         @switchPage="changeCentPart"
+        @checkLogin="checkLoginStatus"
     >
 
     </LeftMenu>
@@ -155,6 +182,7 @@ resize事件只能监控窗口（浏览器窗口）的变化
 </template>
 
 <style lang="scss">
+
 #app {
   margin: 0 auto;
   width: 1600px;

@@ -18,7 +18,7 @@
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;写长博文&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     </el-button>
 
-    <div class="profileBox">
+    <div class="profileBox" @click="$emit('checkLogin')">
       <el-avatar :src="profile.userAvatar" class="avatarInline">
 
       </el-avatar>

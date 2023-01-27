@@ -65,6 +65,17 @@
 <script setup>
 import markdownToTxt from "markdown-to-txt";
 import {ref} from "vue";
+import like from '../../assets/like.svg'
+import liked from '../../assets/liked.svg'
+import comment from '../../assets/comment.svg'
+import comment_filled from '../../assets/comment_filled.svg'
+import share from '../../assets/share.svg'
+
+
+function getImageUrl(name) {
+  return new URL('../../assets/'+name+'.svg', import.meta.url).href
+}
+
 
 const props = defineProps({
   blogProp: Object,
@@ -81,21 +92,23 @@ let likes = props.blogProp.attributes.Likes;
 let comments = props.blogProp.attributes.Comments;
 let likeEvent=()=>{}, commentEvent=()=>{}, shareEvent=()=>{};//后续定义事件函数
 let btnList = ref([{
-  src: "src/assets/like.svg",
+  src: like,
   clickEvent: likeEvent,
   clicked: false,//改为GET到的参数
-  fillsrc: "src/assets/liked.svg",
+  fillsrc: liked,
   data: likes
 },{
-  src: 'src/assets/comment.svg',
+  src: comment,
   clickEvent: commentEvent,
   clicked: false,
-  fillsrc: "src/assets/comment_filled.svg",
+  fillsrc: comment_filled,
   data: comments
 },{
-  src: 'src/assets/share.svg',
+  src: share,
   clickEvent: shareEvent
 }])
+
+console.log(btnList.value)
 
 
 let txtPass = '';

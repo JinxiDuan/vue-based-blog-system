@@ -1,0 +1,190 @@
+<template>
+  <div class="lgPageBox">
+    <div class="topRow">
+      <div>{{ ifLogin ? '登录' : '注册' }}</div>
+      <el-icon size="large">
+        <User/>
+      </el-icon>
+    </div>
+
+    <div class="formBox">
+      <el-form
+          :model="loginRegCheck.form"
+          ref="formRef"
+          :rules="loginRegCheck.rules"
+          label-width="auto"
+          :size="'large'"
+          :style="{
+            width: '460px',
+          }"
+      >
+        <el-form-item label="用户ID" prop="userID">
+          <el-input v-model="loginRegCheck.form.value.userID"></el-input>
+        </el-form-item>
+        <el-form-item v-if="!ifLogin" label="用户名" prop="userName">
+          <el-input v-model="loginRegCheck.form.value.userName"></el-input>
+        </el-form-item>
+        <el-form-item v-if="!ifLogin" label="电子邮件" prop="email">
+          <el-input v-model="loginRegCheck.form.value.email"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input type="password" show-password v-model="loginRegCheck.form.value.password"></el-input>
+        </el-form-item>
+        <el-form-item v-if="!ifLogin" label="再次输入密码" prop="passCheck">
+          <el-input type=password show-password v-model="loginRegCheck.form.passCheck"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="loginRegCheck.btn1Event" round>
+            {{ loginRegCheck.button1 }}
+          </el-button>
+          <el-button @click="submitLogin(formRef)" round type="primary">
+            {{ loginRegCheck.button2 }}
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+  </div>
+
+</template>
+
+<script lang="ts" setup>
+import {computed, onMounted, ref} from "vue";
+import {FormInstance, FormRules} from 'element-plus'
+import axios from "axios";
+
+let ifLogin = ref(true);
+const formRef = ref<FormInstance>(null)
+
+
+let loginForm = ref({
+  userID: '',
+  password: ''
+})
+
+let loginRules = ref<FormRules>({
+  userID: [
+    {required: true, message: '用户名不能为空', trigger: 'blur'}
+  ],
+  password: [
+    {required: true, message: '密码不能为空', trigger: 'blur'}
+  ]
+});
+
+let changeToRegis = () => {
+  ifLogin.value = !ifLogin.value;
+}
+
+let submitLogin = (formEl: FormInstance | undefined) => {
+  if (!formEl) return
+  formEl.validate((valid, fields) => {
+    if (valid) {
+      console.log('loginOK')
+      axios.post(
+          'http://114.132.153.34:9200/api/auth/local',
+          {
+            "identifier": loginForm.value.userID,
+            "password": loginForm.value.password
+          }
+      ).then((response)=>{
+        console.log(response.data)
+      }).catch(function (error) {
+        console.log(error);
+      });
+    } else {
+      console.log('error submit!')
+    }
+  })
+}
+
+let testCookie = ()=>{
+  let cookies = document.cookie;
+
+}
+
+let regisForm = ref({
+  userID: '',
+  userName: '',
+  email: '',
+  password: '',
+  passCheck: '',
+})
+
+let regisRules = ref<FormRules>({
+  userID: [
+    {required: true, message: '用户ID不能为空', trigger: 'blur'}
+  ],
+  userName: [
+    {required: true, message: '用户名不能为空', trigger: 'blur'}
+  ],
+  email: [
+    {required: true, message: '邮箱不能为空', trigger: 'blur'}
+  ],
+  password: [
+    {required: true, message: '密码不能为空', trigger: 'blur'}
+  ],
+  passCheck: [
+    {required: true, message: '请再次输入密码验证', trigger: 'blur'}
+  ]
+})
+
+let submitRegis = () => {
+  //提交注册
+
+}
+
+let changeToLogin = () => {
+  ifLogin.value = !ifLogin.value;
+}
+
+let loginRegCheck = computed(() => {
+  if (ifLogin.value) {
+    return {
+      form: loginForm,
+      rules: loginRules,
+      button1: "注册",
+      btn1Event: changeToRegis,
+      button2: "登录",
+      btn2Event: submitLogin,
+
+    }
+  } else {
+    return {
+      form: regisForm,
+      rules: regisRules,
+      button1: "登录",
+      btn1Event: changeToLogin,
+      button2: "注册",
+      btn2Event: submitRegis,
+    }
+  }
+})
+</script>
+
+<style lang="scss" scoped>
+
+.lgPageBox {
+  height: 100vh;
+  background: url("/src/assets/fred's logo.png");
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.topRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.formBox {
+  width: 100%;
+  height: calc(100vh - 50px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+</style>

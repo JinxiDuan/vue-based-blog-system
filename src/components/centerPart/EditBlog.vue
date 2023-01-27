@@ -310,7 +310,7 @@ const addUpCube = (index) => {
 }
 
 const addDownCube = (index) => {
-  if (index > 0) {
+  if (index >= 0) {
     passage.value.splice(index + 1, 0, {
       "raw": "",
       "html": "",

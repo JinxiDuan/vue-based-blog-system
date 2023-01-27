@@ -4,5 +4,6 @@ import vue from '@vitejs/plugin-vue'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
+  base: '/my-blog-bundled-page/',
   // resolve: { alias: { 'vue': 'vue/dist/vue.esm-bundler.js' } }
 })
