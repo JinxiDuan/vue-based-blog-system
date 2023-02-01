@@ -9,9 +9,9 @@
 
     <div class="formBox">
       <el-form
-          :model="loginRegCheck.form"
+          :model="FormRef"
           ref="formRef"
-          :rules="loginRegCheck.rules"
+          :rules="RulesRef"
           label-width="auto"
           :size="'large'"
           :style="{
@@ -19,25 +19,25 @@
           }"
       >
         <el-form-item label="用户ID" prop="userID">
-          <el-input v-model="loginRegCheck.form.value.userID"></el-input>
+          <el-input v-model="FormRef.userID"></el-input>
         </el-form-item>
         <el-form-item v-if="!ifLogin" label="用户名" prop="userName">
-          <el-input v-model="loginRegCheck.form.value.userName"></el-input>
+          <el-input v-model="FormRef.userName"></el-input>
         </el-form-item>
         <el-form-item v-if="!ifLogin" label="电子邮件" prop="email">
-          <el-input v-model="loginRegCheck.form.value.email"></el-input>
+          <el-input v-model="FormRef.email"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input type="password" show-password v-model="loginRegCheck.form.value.password"></el-input>
+          <el-input type="password" show-password v-model="FormRef.password"></el-input>
         </el-form-item>
         <el-form-item v-if="!ifLogin" label="再次输入密码" prop="passCheck">
-          <el-input type=password show-password v-model="loginRegCheck.form.passCheck"></el-input>
+          <el-input type=password show-password v-model="FormRef.passCheck"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button @click="loginRegCheck.btn1Event" round>
             {{ loginRegCheck.button1 }}
           </el-button>
-          <el-button @click="submitLogin(formRef)" round type="primary">
+          <el-button @click="loginRegCheck.btn2Event(formRef)" round type="primary">
             {{ loginRegCheck.button2 }}
           </el-button>
         </el-form-item>
@@ -48,35 +48,66 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, onMounted, ref} from "vue";
+import {computed, ref} from "vue";
 import {ElMessage, FormInstance, FormRules} from 'element-plus'
 import axios from "axios";
 import Cookies from 'js-cookie';
-import { loginStatus } from "../../LogStatus.js";
+import {loginStatus} from "../../LogStatus.js";
 
 let ifLogin = ref(true);
 const formRef = ref<FormInstance>(null)
 const emits = defineEmits(['loginSuccess'])
 
-let loginForm = ref({
+
+let loginForm = {
   userID: '',
   password: ''
-})
+}
 
-let loginRules = ref<FormRules>({
+let loginRules = {
   userID: [
     {required: true, message: '用户名不能为空', trigger: 'blur'}
   ],
   password: [
     {required: true, message: '密码不能为空', trigger: 'blur'}
   ]
-});
+};
+
+let regisForm = {
+  userID: '',
+  userName: '',
+  email: '',
+  password: '',
+  passCheck: '',
+}
+
+let regisRules = {
+  userID: [
+    {required: true, message: '用户ID不能为空', trigger: 'blur'}
+  ],
+  userName: [
+    {required: true, message: '用户名不能为空', trigger: 'blur'}
+  ],
+  email: [
+    {required: true, message: '邮箱不能为空', trigger: 'blur'}
+  ],
+  password: [
+    {required: true, message: '密码不能为空', trigger: 'blur'}
+  ],
+  passCheck: [
+    {required: true, message: '请再次输入密码验证', trigger: 'blur'}
+  ]
+}
+
+let RulesRef = ref<FormRules>(loginRules);
+let FormRef = ref(loginForm)
 
 let changeToRegis = () => {
   ifLogin.value = !ifLogin.value;
 }
 
 let submitLogin = (formEl: FormInstance | undefined) => {
+  console.log(formEl)
   if (!formEl) return
   formEl.validate((valid, fields) => {
     if (valid) {
@@ -84,13 +115,14 @@ let submitLogin = (formEl: FormInstance | undefined) => {
       axios.post(
           'http://114.132.153.34:9200/api/auth/local',
           {
-            "identifier": loginForm.value.userID,
-            "password": loginForm.value.password
+            "identifier": FormRef.value.userID,
+            "password": FormRef.value.password
           }
       ).then((response) => {
         Cookies.set('jwt', response.data.jwt, {expires: 30})
         //响应式同步登录状态
-        loginStatus.reloadProfile(()=>{});
+        loginStatus.reloadProfile(() => {
+        });
         ElMessage({
           message: '登录成功！',
           type: 'success',
@@ -107,35 +139,37 @@ let submitLogin = (formEl: FormInstance | undefined) => {
 }
 
 
-let regisForm = ref({
-  userID: '',
-  userName: '',
-  email: '',
-  password: '',
-  passCheck: '',
-})
-
-let regisRules = ref<FormRules>({
-  userID: [
-    {required: true, message: '用户ID不能为空', trigger: 'blur'}
-  ],
-  userName: [
-    {required: true, message: '用户名不能为空', trigger: 'blur'}
-  ],
-  email: [
-    {required: true, message: '邮箱不能为空', trigger: 'blur'}
-  ],
-  password: [
-    {required: true, message: '密码不能为空', trigger: 'blur'}
-  ],
-  passCheck: [
-    {required: true, message: '请再次输入密码验证', trigger: 'blur'}
-  ]
-})
-
-let submitRegis = () => {
+let submitRegis = (formEl: FormInstance | undefined) => {
   //提交注册
-
+  if (!formEl) return
+  formEl.validate((valid, fields) => {
+        if (valid) {
+          axios.post(
+              'http://114.132.153.34:9200/api/auth/local/register',
+              {
+                "username": FormRef.value.userID,
+                "notUniqueName": FormRef.value.userName,
+                "email": FormRef.value.email,
+                "password": FormRef.value.password
+              }
+          ).then((response) => {
+            Cookies.set('jwt', response.data.jwt, {expires: 30})
+            //响应式同步登录状态
+            loginStatus.reloadProfile(() => {
+            });
+            ElMessage({
+              message: '注册成功，已为您自动登录！',
+              type: 'success',
+            })
+            emits('loginSuccess')
+          }).catch((err)=>{
+            console.log(err);
+          })
+        } else {
+          console.log('error submit!', fields)
+        }
+      }
+  )
 }
 
 let changeToLogin = () => {
@@ -144,9 +178,10 @@ let changeToLogin = () => {
 
 let loginRegCheck = computed(() => {
   if (ifLogin.value) {
+    RulesRef.value = loginRules;
+    FormRef.value = loginForm;
     return {
-      form: loginForm,
-      rules: loginRules,
+      rules: regisRules,
       button1: "注册",
       btn1Event: changeToRegis,
       button2: "登录",
@@ -154,8 +189,9 @@ let loginRegCheck = computed(() => {
 
     }
   } else {
+    FormRef.value = regisForm;
+    RulesRef.value = regisRules;
     return {
-      form: regisForm,
       rules: regisRules,
       button1: "登录",
       btn1Event: changeToLogin,

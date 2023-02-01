@@ -188,18 +188,18 @@ resize事件只能监控窗口（浏览器窗口）的变化
 /*1.29
 实现短博文发送的API√
 待办汇总：
-长博文发送接口√
-strapi结构调整，like需改为联系，comment联系需改回user_permission√
-加Singleblog按钮监听事件 [-]
+长博文发送接口√ 1.30
+strapi结构调整，like需改为联系，comment联系需改回user_permission√ 1.31
+加Singleblog按钮监听事件 [-] 评论功能后面做 2.1
 注册validator逻辑补充
-加注册接口
+加注册接口 √
 修复编辑器bug√ 曲折，可以多讲讲
 全篇文章阅读组件
 博文预览组件带图版本
 编辑器草稿箱
 RightColumn部分
 修改热门预览部分时间戳更新不及时的问题
-
+获取到的profile不包含头像信息时显示错误待修复
 *vue的列表渲染应该扩充一下
  */
 </script>

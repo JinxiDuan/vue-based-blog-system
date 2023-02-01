@@ -25,7 +25,7 @@
       </el-input>
     </div>
     <div class="postBtnBox">
-      <el-button round id="draftSaveBtn" disabled>保存草稿</el-button>
+      <el-button round id="draftSaveBtn" @click="saveDraft" disabled>保存草稿</el-button>
       <el-button @click="submitShortBlog" type="primary" round>
         发送短博文
       </el-button>
@@ -76,6 +76,10 @@ let getNewBlog = () => {
   })
 }
 getNewBlog();
+
+let saveDraft = ()=>{
+  // location.href="https://baidu.com/"
+}
 
 let submitShortBlog = () => {
   if (loginStatus.logonStatus) {
