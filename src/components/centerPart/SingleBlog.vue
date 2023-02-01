@@ -13,7 +13,7 @@
       <div class="nameAndID">
         <span class="name">{{ userName }}</span>
         &nbsp;&nbsp;
-        <span class="id">{{ '@' + userID }}</span>
+        <span class="id">{{ '@' + userID + ' · ' + timeago }}</span>
       </div>
 
       <div class="body" style="margin-top: 2px;">
@@ -51,7 +51,7 @@
 
       <div class="OperateArea">
         <div class="btnWithData" v-for="(btn, i) in btnList">
-          <div class="bottomBtn" @click="btn.clickEvent;">
+          <div class="bottomBtn" @click="btn.clickEvent">
             <img :src="btn.clicked?btn.fillsrc:btn.src" height="18" width="18">
           </div>
           <span v-if="btn.data">{{ btn.data }}</span>
@@ -64,63 +64,117 @@
 
 <script setup>
 import markdownToTxt from "markdown-to-txt";
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import like from '../../assets/like.svg'
 import liked from '../../assets/liked.svg'
 import comment from '../../assets/comment.svg'
 import comment_filled from '../../assets/comment_filled.svg'
 import share from '../../assets/share.svg'
-
-
-function getImageUrl(name) {
-  return new URL('../../assets/'+name+'.svg', import.meta.url).href
-}
-
+import {format} from "timeago.js";
+import {loginStatus} from "../../LogStatus.js";
+import {ElMessage} from "element-plus";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 const props = defineProps({
   blogProp: Object,
 })
 console.log(props.blogProp)
 let RequesUrl = "http://114.132.153.34:9200"
-let avatarUrl = RequesUrl + props.blogProp.attributes.blog_user.data.attributes.UserAvatar.data.attributes.formats.thumbnail.url;
-let userName = props.blogProp.attributes.blog_user.data.attributes.UserName;
-let userID = props.blogProp.attributes.blog_user.data.attributes.UserID;
+let blogID = props.blogProp.id;
+let avatarUrl = RequesUrl + props.blogProp.attributes.users_permissions_user
+    .data.attributes.userAvatar.data.attributes.formats.thumbnail.url;
+let userName = props.blogProp.attributes.users_permissions_user
+    .data.attributes.notUniqueName;
+let userID = props.blogProp.attributes.users_permissions_user
+    .data.attributes.username;
 let ifShortBlog = props.blogProp.attributes.IfShortBlog;
 let title = props.blogProp.attributes.Title;
 let passage = props.blogProp.attributes.Content.passage;
-let likes = props.blogProp.attributes.Likes;
+let likes = props.blogProp.attributes.Likes.data.length;
 let comments = props.blogProp.attributes.Comments;
-let likeEvent=()=>{}, commentEvent=()=>{}, shareEvent=()=>{};//后续定义事件函数
+let publishTime = props.blogProp.attributes.publishedAt;
+let timeago = ref(format(publishTime, 'zh_CN'));
+let likeEvent = () => {
+      if (loginStatus.logonStatus) {
+        btnList.value[0].clicked = !btnList.value[0].clicked;
+      } else {
+        ElMessage({
+          message: "请先登录！",
+          type: "warning"
+        })
+      }
+    },
+    commentEvent = () => {
+    }, shareEvent = () => {
+    };//后续定义事件函数
+
+let getLiked = () => {
+  for (let index in props.blogProp.attributes.Likes.data) {
+    if (props.blogProp.attributes.Likes.data[index].id == loginStatus.logonProfile.id) {
+      return true;
+    }
+  }
+  return false;
+}
+
 let btnList = ref([{
   src: like,
   clickEvent: likeEvent,
-  clicked: false,//改为GET到的参数
+  clicked: getLiked(),//改为GET到的参数
   fillsrc: liked,
   data: likes
-},{
+}, {
   src: comment,
   clickEvent: commentEvent,
   clicked: false,
   fillsrc: comment_filled,
   data: comments
-},{
+}, {
   src: share,
   clickEvent: shareEvent
 }])
 
-console.log(btnList.value)
+watch(() => btnList.value[0].clicked, (newValue) => {
+  console.log(newValue)
+  let keyID;
+  let jwtoken = Cookies.get('jwt');
+  if (newValue) {
+    keyID = {
+      connect: [loginStatus.logonProfile.id]
+    };
+  } else {
+    keyID = {
+      disconnect: [loginStatus.logonProfile.id]
+    };
+  }
+  console.log(keyID)
+  axios.put('http://114.132.153.34:9200/api/blogs/'+blogID+'?populate=*',
+      {data: {Likes: keyID}},
+      {
+        headers: {
+          'Authorization': 'Bearer '+jwtoken,
+        }
+      })
+      .then((response) => {
+        console.log(response.data);
+        let data = response.data;
+        btnList.value[0].data = data.data.attributes.Likes.data.length;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
-
+})
+// console.log(btnList.value)
 let txtPass = '';
-for (let para in passage) {
-  txtPass += markdownToTxt(passage[para].raw);
+if (!ifShortBlog) {
+  for (let para in passage) {
+    txtPass += markdownToTxt(passage[para].raw);
+  }
 }
-
 
 // console.log(txtPass)
-const showID = () => {
-  console.log(userID);
-}
 </script>
 
 <style lang="scss" scoped>
@@ -159,6 +213,7 @@ const showID = () => {
 .nameAndID {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .name {
@@ -199,13 +254,13 @@ const showID = () => {
   align-items: center;
 }
 
-.btnWithData{
+.btnWithData {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.bottomBtn{
+.bottomBtn {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -214,11 +269,11 @@ const showID = () => {
   border-radius: 17.5px;
 }
 
-.bottomBtn:hover{
+.bottomBtn:hover {
   background-color: rgba(77, 76, 76, 0.14);
 }
 
-.ThreeDotDD{
+.ThreeDotDD {
   position: absolute;
   top: 6px;
   right: 10px;

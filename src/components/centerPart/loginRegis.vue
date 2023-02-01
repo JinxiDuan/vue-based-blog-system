@@ -49,12 +49,14 @@
 
 <script lang="ts" setup>
 import {computed, onMounted, ref} from "vue";
-import {FormInstance, FormRules} from 'element-plus'
+import {ElMessage, FormInstance, FormRules} from 'element-plus'
 import axios from "axios";
+import Cookies from 'js-cookie';
+import { loginStatus } from "../../LogStatus.js";
 
 let ifLogin = ref(true);
 const formRef = ref<FormInstance>(null)
-
+const emits = defineEmits(['loginSuccess'])
 
 let loginForm = ref({
   userID: '',
@@ -85,21 +87,25 @@ let submitLogin = (formEl: FormInstance | undefined) => {
             "identifier": loginForm.value.userID,
             "password": loginForm.value.password
           }
-      ).then((response)=>{
-        console.log(response.data)
+      ).then((response) => {
+        Cookies.set('jwt', response.data.jwt, {expires: 30})
+        //响应式同步登录状态
+        loginStatus.reloadProfile(()=>{});
+        ElMessage({
+          message: '登录成功！',
+          type: 'success',
+        })
+        emits('loginSuccess')
       }).catch(function (error) {
         console.log(error);
       });
+      //将登录态同步到
     } else {
       console.log('error submit!')
     }
   })
 }
 
-let testCookie = ()=>{
-  let cookies = document.cookie;
-
-}
 
 let regisForm = ref({
   userID: '',

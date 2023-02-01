@@ -19,15 +19,17 @@
     </el-button>
 
     <div class="profileBox" @click="$emit('checkLogin')">
-      <el-avatar :src="profile.userAvatar" class="avatarInline">
+      <div class="avaAndName">
+        <el-avatar :src="loginStatus.logonStatus?loginStatus.urlStart+loginStatus.logonProfile.userAvatar.formats.thumbnail.url:loginStatus.logonProfile.userAvatar.formats.thumbnail.url" class="avatarInline">
 
-      </el-avatar>
-      <div id="nameID">
-        <div id="userName">
-          {{ profile.userName }}
-        </div>
-        <div id="userID">
-          {{ '@' + profile.userID }}
+        </el-avatar>
+        <div id="nameID">
+          <div id="userName">
+            {{ loginStatus.logonProfile.username }}
+          </div>
+          <div id="userID">
+            {{ '@' + loginStatus.logonProfile.userID }}
+          </div>
         </div>
       </div>
       <el-icon class="settingsIcon">
@@ -41,6 +43,7 @@
 <script setup>
 
 import {ref} from "vue";
+import {loginStatus} from "../LogStatus.js";
 
 const props = defineProps({
   refWidth: Number,
@@ -60,7 +63,7 @@ let profile = ref({
   userName: "undefined",
   userAvatar: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
   userRole: undefined
-})
+})//预计废弃
 defineExpose({
   // 使用setup语法糖需要定义expose来向外暴露属性
   profile
@@ -68,7 +71,7 @@ defineExpose({
 </script>
 
 <style lang="scss" scoped>
-*{
+* {
   box-sizing: border-box;
 }
 
@@ -90,7 +93,7 @@ defineExpose({
   margin-left: 0;
 }
 
-.spBtn{
+.spBtn {
   font-family: "微软雅黑 Light";
   font-weight: bold;
   font-size: 16px;
@@ -106,12 +109,18 @@ defineExpose({
   bottom: 10px;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
 }
 
 .profileBox:hover {
   background-color: rgba(15, 20, 25, 0.1)
+}
+
+.avaAndName{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .avatarInline {
@@ -135,6 +144,6 @@ defineExpose({
 }
 
 .settingsIcon {
-  margin-left: 40px;
+  margin-right: 10px;
 }
 </style>

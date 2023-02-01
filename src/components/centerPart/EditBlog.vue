@@ -1,141 +1,155 @@
 <template>
-  <el-menu
-      class="el-menu-demo"
-      mode="horizontal"
-      :ellipsis="false"
-      @select="handleSelect"
-  >
-    <el-menu-item index="0" style="font-size: 24px;font-weight:bold;">长博文编辑器</el-menu-item>
-    <div class="flex-grow"/>
-    <el-sub-menu index="1">
-      <template #title>文件</template>
-      <el-menu-item index="1-1">新建</el-menu-item>
-      <el-menu-item index="1-2">保存到本地</el-menu-item>
-      <el-menu-item index="1-3">打印</el-menu-item>
-    </el-sub-menu>
-    <el-sub-menu index="2">
-      <template #title>编辑</template>
-      <el-menu-item index="2-1">在上方新增单元格</el-menu-item>
-      <el-menu-item index="2-2">在下方新增单元格</el-menu-item>
-      <el-menu-item index="2-3">上移单元格</el-menu-item>
-      <el-menu-item index="2-4">下移单元格</el-menu-item>
-      <el-menu-item index="2-5">删除当前单元格</el-menu-item>
-    </el-sub-menu>
-    <el-sub-menu index="3">
-      <template #title>设置</template>
-      <el-sub-menu index="3-1">
-        <template #title>字体大小</template>
-        <el-menu-item index="3-1-1">
-          <el-slider v-model="fontsize" :min="10" :max="40"/>
-        </el-menu-item>
+  <div>
+    <el-menu
+        class="el-menu-demo"
+        mode="horizontal"
+        :ellipsis="false"
+        @select="handleSelect"
+    >
+      <el-menu-item index="0" style="font-size: 24px;font-weight:bold;">长博文编辑器</el-menu-item>
+      <div class="flex-grow"/>
+      <el-sub-menu index="1">
+        <template #title>文件</template>
+        <el-menu-item index="1-1">新建</el-menu-item>
+        <el-menu-item index="1-2">保存到本地</el-menu-item>
+        <el-menu-item index="1-3">打印</el-menu-item>
       </el-sub-menu>
-      <el-sub-menu index="3-2">
-        <template #title>主题选择</template>
-        <el-menu-item index="3-2-1">白色日间</el-menu-item>
-        <el-menu-item index="3-2-2">黑色深邃</el-menu-item>
+      <el-sub-menu index="2">
+        <template #title>编辑</template>
+        <el-menu-item index="2-1">在上方新增单元格</el-menu-item>
+        <el-menu-item index="2-2">在下方新增单元格</el-menu-item>
+        <el-menu-item index="2-3">上移单元格</el-menu-item>
+        <el-menu-item index="2-4">下移单元格</el-menu-item>
+        <el-menu-item index="2-5">删除当前单元格</el-menu-item>
       </el-sub-menu>
-    </el-sub-menu>
-  </el-menu>
+      <el-sub-menu index="3">
+        <template #title>设置</template>
+        <el-sub-menu index="3-1">
+          <template #title>字体大小</template>
+          <el-menu-item index="3-1-1">
+            <el-slider v-model="fontsize" :min="10" :max="40"/>
+          </el-menu-item>
+        </el-sub-menu>
+        <el-sub-menu index="3-2">
+          <template #title>主题选择</template>
+          <el-menu-item index="3-2-1">白色日间</el-menu-item>
+          <el-menu-item index="3-2-2">黑色深邃</el-menu-item>
+        </el-sub-menu>
+      </el-sub-menu>
+    </el-menu>
 
-  <div class="floatToolBox">
-    <el-affix :offset="10" style="z-index: 1501">
-      <el-button-group>
-        <el-button round>便捷工具栏</el-button>
-        <el-button type="primary" @click="moveUp(nowEditingIndex)" round>
-          <el-icon>
-            <Top/>
-          </el-icon>
-          上移
+    <div class="floatToolBox">
+      <el-affix :offset="10" style="z-index: 1501">
+        <el-button-group>
+          <el-button round>便捷工具栏</el-button>
+          <el-button type="primary" @click="moveUp(nowEditingIndex)" round>
+            <el-icon>
+              <Top/>
+            </el-icon>
+            上移
+          </el-button>
+          <el-button type="primary" @click="moveDown(nowEditingIndex)" round>
+            <el-icon>
+              <Bottom/>
+            </el-icon>
+            下移
+          </el-button>
+          <el-button type="primary" @click="copyCube(nowEditingIndex)" round>
+            <el-icon>
+              <CopyDocument/>
+            </el-icon>
+            复制
+          </el-button>
+          <el-button type="primary" @click="addUpCube(nowEditingIndex)" round>
+            <el-icon>
+              <Upload/>
+            </el-icon>
+            在上方新建
+          </el-button>
+          <el-button type="primary" @click="addDownCube(nowEditingIndex)" round>
+            <el-icon>
+              <Download/>
+            </el-icon>
+            在下方新建
+          </el-button>
+          <el-button type="primary" @click="deleteCube(nowEditingIndex)" round>
+            <el-icon>
+              <Delete/>
+            </el-icon>
+            删除
+          </el-button>
+          <el-button type="primary" @click="showID" round>
+            🆔
+          </el-button>
+        </el-button-group>
+      </el-affix>
+    </div>
+
+    <div class="titleBox">
+      <el-input
+          style="font-size: 18px"
+          placeholder="请输入标题"
+          v-model="title"
+          :maxlength="30"
+          show-word-limit
+          size="large"
+      >
+        <template #append>
+          .md
+        </template>
+      </el-input>
+    </div>
+
+
+    <div class="editorBox"
+         ref="editorBox"
+         v-for="(para, i) in passage"
+         :key="para.uniqueID"
+         @click="changeFocus(i)"
+    >
+      <div class="IDandUIDBox" v-if="ifShowID">
+        <div class="IDBox" title="顺序编号">
+          {{ i }}
+        </div>
+        <div class="UIDBox"
+             title="唯一编号"
+             :style="{backgroundColor: i==nowEditingIndex?'#409EFF':'',color: i==nowEditingIndex?'white':'black'}">
+          {{ para.uniqueID }}
+        </div>
+      </div>
+      <div class="placeInEditor" v-if="ifShowID">
+
+      </div>
+      <mavon-editor
+          v-model="para.raw"
+          :toolbars="toolbarsVal"
+          :subfield="false"
+          :font-size="fontsize+'px'"
+          @change="(val, render)=>{saveHtml(val,render,i)}"/>
+    </div>
+
+    <el-affix position="bottom" :offset="30" z-index="3000">
+      <div class="submitBtnBox">
+        <el-button round>
+          保存草稿
         </el-button>
-        <el-button type="primary" @click="moveDown(nowEditingIndex)" round>
-          <el-icon>
-            <Bottom/>
-          </el-icon>
-          下移
+        <el-button type="primary" @click="submitLongBlog" round>
+          发送
         </el-button>
-        <el-button type="primary" @click="copyCube(nowEditingIndex)" round>
-          <el-icon>
-            <CopyDocument/>
-          </el-icon>
-          复制
-        </el-button>
-        <el-button type="primary" @click="addUpCube(nowEditingIndex)" round>
-          <el-icon>
-            <Upload/>
-          </el-icon>
-          在上方新建
-        </el-button>
-        <el-button type="primary" @click="addDownCube(nowEditingIndex)" round>
-          <el-icon>
-            <Download/>
-          </el-icon>
-          在下方新建
-        </el-button>
-        <el-button type="primary" @click="deleteCube(nowEditingIndex)" round>
-          <el-icon>
-            <Delete/>
-          </el-icon>
-          删除
-        </el-button>
-        <el-button type="primary" @click="showID" round>
-          🆔
-        </el-button>
-      </el-button-group>
+      </div>
     </el-affix>
   </div>
-
-  <div class="titleBox">
-    <el-input
-        style="font-size: 18px"
-        placeholder="请输入标题"
-        v-model="title"
-        :maxlength="30"
-        show-word-limit
-        size="large"
-    >
-      <template #append>
-        .md
-      </template>
-    </el-input>
-  </div>
-
-
-  <div class="editorBox" ref="editorBox" v-for="(para, i) in passage" :key="para.uniqueID" @click="changeFocus(i)">
-    <div class="IDandUIDBox" v-if="ifShowID">
-      <div class="IDBox" title="顺序编号">
-        {{ i }}
-      </div>
-      <div class="UIDBox"
-           title="唯一编号"
-           :style="{height: UIDsBoxHeight[i]+'px',backgroundColor: i==nowEditingIndex?'#409EFF':'',color: i==nowEditingIndex?'white':'black'}">
-        {{ para.uniqueID }}
-      </div>
-    </div>
-    <mavon-editor
-        v-model="para.raw"
-        :toolbars="toolbarsVal"
-        :subfield="false"
-        :font-size="fontsize+'px'"
-        @change="(val, render)=>{saveHtml(val,render,i)}"/>
-  </div>
-
-  <el-affix position="bottom" :offset="30" z-index="3000">
-    <div class="submitBtnBox">
-      <el-button round>
-        保存草稿
-      </el-button>
-      <el-button type="primary" round>
-        发送
-      </el-button>
-    </div>
-  </el-affix>
 </template>
 
 <script setup>
 import {nextTick, onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
+import {loginStatus} from "../../LogStatus.js";
+import axios from "axios";
+import Cookies from "js-cookie";
 
 let valueInCube = ref('');//测试用变量需删除
+let emits = defineEmits(['postSuccess'])
 let fontsize = ref(14);
 const handleSelect = (key, keyPath) => {
   console.log(key, keyPath)
@@ -290,7 +304,6 @@ const copyCube = (index) => {
   refreshEDBoxList()
 }
 
-
 const addUpCube = (index) => {
   if (index >= 0) {
     passage.value.splice(index, 0, {
@@ -345,6 +358,50 @@ const showID = () => {
   ifShowID.value = !ifShowID.value;
 }
 
+let submitLongBlog = () => {
+  console.log(passage);
+  if (loginStatus.logonStatus) {
+    if (title.value && passage.value[0].raw) {
+      let data = {
+        data: {
+          Title: title.value,
+          Content: {
+            passage: passage.value
+          },
+          IfShortBlog: false,
+          users_permissions_user: {
+            connect: [loginStatus.logonProfile.id]
+          }
+        }
+      }
+      axios.post('http://114.132.153.34:9200/api/blogs', data, {
+        headers: {
+          'Authorization': 'Bearer ' + Cookies.get('jwt'),
+        }
+      }).then((response) => {
+        console.log(response.data)
+        ElMessage({
+          type: "success",
+          message: "发布成功"
+        })
+        emits('postSuccess')
+      }).catch((err) => {
+        console.log(err)
+      })
+    } else {
+      ElMessage({
+        type: "warning",
+        message: "标题或内容不能为空!"
+      })
+    }
+  } else {
+    ElMessage({
+      type: "warning",
+      message: "请先登录!"
+    })
+  }
+}
+
 const click = () => {
   console.log('nmsl');
 }//测试用变量需删除
@@ -360,6 +417,7 @@ const click = () => {
   /*flex-direction: row;*/
   height: auto;
   margin: 10px 5px;
+  position: relative;
 }
 
 .floatToolBox {
@@ -371,9 +429,13 @@ const click = () => {
 }
 
 .IDandUIDBox {
+  position: absolute;
+  z-index: 1600;
+  left: 0;
+  top: 0;
+  bottom: 0;
   display: flex;
   flex-direction: column;
-  float: left;
 }
 
 
@@ -390,12 +452,19 @@ const click = () => {
 }
 
 .UIDBox {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: rgba(170, 170, 170, 0.33);
   font-family: PTSans;
   font-size: 18px;
+}
+
+.placeInEditor {
+  float: left;
+  width: 20px;
+  height: 10px;
 }
 
 .titleBox {

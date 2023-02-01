@@ -1,9 +1,14 @@
 <script setup>
+import {loginStatus} from "./LogStatus.js";
 import LeftMenu from "./components/LeftMenu.vue";
 import CentCont from "./components/CentCont.vue";
 import RightCol from "./components/RightCol.vue";
-import {computed, nextTick, onMounted, provide, reactive, ref, watch} from "vue";
+import {computed, nextTick, onMounted, provide, ref} from "vue";
+import Cookies from "js-cookie";
+import {ElMessage} from "element-plus";
 
+
+loginStatus.reloadProfile();
 
 const placeHolder = ref();
 const leftMenu = ref();
@@ -12,6 +17,8 @@ const centerCompTag = ref('h')
 let state = ref({phWidth: 100, phLeft: 100}) //The width of PlaceHolder
 provide('userAvaRef', userAvaRef);
 //提供头像的路径以供注入
+
+
 
 onMounted(() => {
       state.value.phWidth = placeHolder.value.$el.offsetWidth;
@@ -39,13 +46,26 @@ let boundingClientRect = computed(() => {
 })
 
 
-let checkLoginStatus = () =>{
-  //待补充
-  changeCentPart('l')
+let checkLoginStatus = () => {
+  if (loginStatus.logonStatus) {
+    //待修改
+    loginStatus.logOut()
+  } else {
+    changeCentPart('l')
+  }
 }
 
 let changeCentPart = (tag) => {
   if (tag) {
+    if(tag=='w'){
+     if(loginStatus.logonStatus == false){
+       ElMessage({
+         message: "请先登录！",
+         type: "warning"
+       })
+       return;
+     }
+    }
     centerCompTag.value = tag;
     nextTick(() => {
       state.value.phWidth = placeHolder.value.$el.offsetWidth;
@@ -81,7 +101,7 @@ json-server可用但是好像不支持图片等数据，可能可以转为矩阵
 props无需使用value访问
 使用setup语法糖需要使用defineExpose定义暴露给父子节点
 做了一个短报文发送框
-用inject方法获取了头像
+用inject方法获取了头像（废弃）
 考虑将单个博文包装为组件，props传单个博文对象进去，用v-for遍历获取到的博文
 用cheerio或htmlparser获取博文转html后的图片路径，做一个带图片和不带图片的预览组件版本（待实现）
 单个博文组件使用el自带的卡片组件+左头像
@@ -154,6 +174,34 @@ resize事件只能监控窗口（浏览器窗口）的变化
 必须要用ref=""
 不能使用:ref绑定，否则要加"''"
  */
+
+/*1.27
+发现一个bug：
+在编辑器中移动了某个单元格后，序号框高度不能自适应
+完成了登录API以及登录状态的多组件间同步
+目前暂时使用导出响应式对象实现，后续可以迁移到pinia
+左栏的profile临时变量已改成LogStatus.js中的对象
+ */
+/* 1.28
+做了博客get部分的API
+ */
+/*1.29
+实现短博文发送的API√
+待办汇总：
+长博文发送接口√
+strapi结构调整，like需改为联系，comment联系需改回user_permission√
+加Singleblog按钮监听事件 [-]
+注册validator逻辑补充
+加注册接口
+修复编辑器bug√ 曲折，可以多讲讲
+全篇文章阅读组件
+博文预览组件带图版本
+编辑器草稿箱
+RightColumn部分
+修改热门预览部分时间戳更新不及时的问题
+
+*vue的列表渲染应该扩充一下
+ */
 </script>
 
 
@@ -172,7 +220,11 @@ resize事件只能监控窗口（浏览器窗口）的变化
     <el-col :span="3" ref="placeHolder">
       <!--Just A Placeholder-->
     </el-col>
-    <CentCont :center-component="centerCompTag">
+    <CentCont
+        :center-component="centerCompTag"
+        @loginSuccess="changeCentPart('h')"
+        @post-success="changeCentPart('h')"
+    >
 
     </CentCont>
     <RightCol>
