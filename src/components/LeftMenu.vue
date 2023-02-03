@@ -20,7 +20,10 @@
 
     <div class="profileBox" @click="$emit('checkLogin')">
       <div class="avaAndName">
-        <el-avatar :src="loginStatus.logonStatus?loginStatus.urlStart+loginStatus.logonProfile.userAvatar.formats.thumbnail.url:loginStatus.logonProfile.userAvatar.formats.thumbnail.url" class="avatarInline">
+        <el-avatar
+            :src="loginStatus.logonStatus&&loginStatus.logonProfile.userAvatar
+            ?loginStatus.urlStart+loginStatus.logonProfile.userAvatar.formats.thumbnail.url:
+            loginStatus.defaultAvatar" class="avatarInline">
 
         </el-avatar>
         <div id="nameID">

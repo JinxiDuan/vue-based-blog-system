@@ -10,28 +10,35 @@
     </div>
     <div class="postShortBox">
       <el-avatar
-          :src="loginStatus.logonStatus?loginStatus.urlStart+loginStatus.logonProfile.userAvatar.formats.thumbnail.url:loginStatus.logonProfile.userAvatar.formats.thumbnail.url"
-          style="margin-right: 24px;" :size="48"></el-avatar>
+          :size="48"
+          :src="loginStatus.logonStatus&&loginStatus.logonProfile.userAvatar
+            ?loginStatus.urlStart+loginStatus.logonProfile.userAvatar.formats.thumbnail.url:
+            loginStatus.defaultAvatar" style="margin-right: 24px;"></el-avatar>
       <el-input
           v-model="shortBlog"
-          placeholder="有什么新鲜事？"
-          type="textarea"
-          maxlength="300"
           :autosize="{minRows:2,maxRows:10}"
-          resize="none"
           class="shortBlog"
-          show-word-limit>
+          maxlength="300"
+          placeholder="有什么新鲜事？"
+          resize="none"
+          show-word-limit
+          type="textarea">
 
       </el-input>
     </div>
     <div class="postBtnBox">
-      <el-button round id="draftSaveBtn" @click="saveDraft" disabled>保存草稿</el-button>
-      <el-button @click="submitShortBlog" type="primary" round>
+      <el-button id="draftSaveBtn" disabled round @click="saveDraft">保存草稿</el-button>
+      <el-button round type="primary" @click="submitShortBlog">
         发送短博文
       </el-button>
     </div>
     <div id="allBlogsBox">
-      <SingleBlog v-for="blog in Blogs" :key="blog.id" :blog-prop="blog">
+      <SingleBlog
+          v-for="blog in Blogs"
+          :key="blog.id"
+          :blog-prop="blog"
+          @enter-passage="(blogprop)=>$emit('enterPassage', blogprop)"
+      >
       </SingleBlog>
     </div>
   </div>
@@ -77,7 +84,7 @@ let getNewBlog = () => {
 }
 getNewBlog();
 
-let saveDraft = ()=>{
+let saveDraft = () => {
   // location.href="https://baidu.com/"
 }
 

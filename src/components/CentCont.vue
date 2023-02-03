@@ -3,18 +3,23 @@
       :span="holderSpan"
       style="position: relative;"
   >
-    <component :is="ComponentRefs[props.centerComponent]"
-               @login-success="$emit('loginSuccess')"
-               @post-success="$emit('postSuccess')"
-    >
-    </component>
+    <KeepAlive include="HitBlog">
+      <component :is="ComponentRefs[props.centerComponent]"
+                 @login-success="$emit('loginSuccess')"
+                 @post-success="$emit('postSuccess')"
+                 @enter-passage="(blogprop)=>$emit('enterPassage', blogprop)"
+                 @return-hit="$emit('returnHit')"
+      >
+      </component>
+    </KeepAlive>
   </el-col>
 </template>
 
 <script setup>
 import HitBlog from "./centerPart/HitBlog.vue";
 import EditBlog from "./centerPart/EditBlog.vue";
-import loginRegis from "./centerPart/loginRegis.vue"
+import loginRegis from "./centerPart/LoginRegis.vue";
+import Passage from "./centerPart/Passage.vue";
 import {computed} from "vue";
 
 const props = defineProps({
@@ -24,7 +29,8 @@ const props = defineProps({
 let ComponentRefs = {
   'h': HitBlog,
   'w': EditBlog,
-  'l': loginRegis
+  'l': loginRegis,
+  'p': Passage
 }
 
 const holderSpan = computed(() => {

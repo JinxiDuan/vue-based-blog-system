@@ -81,6 +81,40 @@ let regisForm = {
   passCheck: '',
 }
 
+const validateEmail = (rule: any, value: any, callback: any) => {
+  let re = new RegExp('^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)+$');
+  if (re.test(value)) {
+    callback();
+  } else {
+    callback(new Error("邮箱不符合格式！"));
+  }
+}
+
+const validatePass = (rule: any, value: any, callback: any) => {
+  if (value === '') {
+    callback(new Error('请输入密码'));
+  } else if(value.length<6){
+    callback(new Error('密码长度需大于6位'))
+  }else{
+    if (FormRef.value.passCheck !== '') {
+      if (!formRef.value) return
+      formRef.value.validateField('passCheck', () => null)
+      //如果检查时未挂载则再次检查
+    }
+    callback()
+  }
+}
+
+const validatePass2 = (rule: any, value: any, callback: any) => {
+  if (value === '') {
+    callback(new Error('请再次输入密码'))
+  } else if (value !== FormRef.value.password) {
+    callback(new Error("两次输入密码不一致"))
+  } else {
+    callback()
+  }
+}
+
 let regisRules = {
   userID: [
     {required: true, message: '用户ID不能为空', trigger: 'blur'}
@@ -89,18 +123,28 @@ let regisRules = {
     {required: true, message: '用户名不能为空', trigger: 'blur'}
   ],
   email: [
-    {required: true, message: '邮箱不能为空', trigger: 'blur'}
+    {required: true, message: '邮箱不能为空', trigger: 'blur'},
+    {validator: validateEmail, trigger: 'blur'}
   ],
   password: [
-    {required: true, message: '密码不能为空', trigger: 'blur'}
+    {required: true, message: '密码不能为空', trigger: 'blur'},
+    {validator: validatePass, trigger: 'blur'}
   ],
   passCheck: [
-    {required: true, message: '请再次输入密码验证', trigger: 'blur'}
+    {required: true, message: '请再次输入密码验证', trigger: 'blur'},
+    {validator: validatePass2, trigger: 'blur'}
   ]
 }
 
 let RulesRef = ref<FormRules>(loginRules);
 let FormRef = ref(loginForm)
+//FormRef 表单的model
+//formRef 表单的ref
+
+
+// onMounted(()=>{
+//   console.log(1,!formRef.value)
+// })
 
 let changeToRegis = () => {
   ifLogin.value = !ifLogin.value;
@@ -143,33 +187,32 @@ let submitRegis = (formEl: FormInstance | undefined) => {
   //提交注册
   if (!formEl) return
   formEl.validate((valid, fields) => {
-        if (valid) {
-          axios.post(
-              'http://114.132.153.34:9200/api/auth/local/register',
-              {
-                "username": FormRef.value.userID,
-                "notUniqueName": FormRef.value.userName,
-                "email": FormRef.value.email,
-                "password": FormRef.value.password
-              }
-          ).then((response) => {
-            Cookies.set('jwt', response.data.jwt, {expires: 30})
-            //响应式同步登录状态
-            loginStatus.reloadProfile(() => {
-            });
-            ElMessage({
-              message: '注册成功，已为您自动登录！',
-              type: 'success',
-            })
-            emits('loginSuccess')
-          }).catch((err)=>{
-            console.log(err);
-          })
-        } else {
-          console.log('error submit!', fields)
-        }
-      }
-  )
+    if (valid) {
+      axios.post(
+          'http://114.132.153.34:9200/api/auth/local/register',
+          {
+            "username": FormRef.value.userID,
+            "notUniqueName": FormRef.value.userName,
+            "email": FormRef.value.email,
+            "password": FormRef.value.password
+          }
+      ).then((response) => {
+        Cookies.set('jwt', response.data.jwt, {expires: 30})
+        //响应式同步登录状态
+        loginStatus.reloadProfile(() => {
+        });
+        ElMessage({
+          message: '注册成功，已为您自动登录！',
+          type: 'success',
+        })
+        emits('loginSuccess')
+      }).catch((err) => {
+        console.log(err);
+      })
+    } else {
+      console.log('error submit!', fields)
+    }
+  })
 }
 
 let changeToLogin = () => {

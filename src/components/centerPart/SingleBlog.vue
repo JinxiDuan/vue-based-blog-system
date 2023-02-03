@@ -38,6 +38,7 @@
           class="longBlogBody"
           v-if="!ifShortBlog"
           shadow="hover"
+          @click="enterPassage"
       >
         <template #header>
           <div class="title">
@@ -64,7 +65,7 @@
 
 <script setup>
 import markdownToTxt from "markdown-to-txt";
-import {ref, watch} from "vue";
+import {ref, watch, defineEmits} from "vue";
 import like from '../../assets/like.svg'
 import liked from '../../assets/liked.svg'
 import comment from '../../assets/comment.svg'
@@ -76,14 +77,17 @@ import {ElMessage} from "element-plus";
 import axios from "axios";
 import Cookies from "js-cookie";
 
+
+const emits = defineEmits(['enterPassage'])
 const props = defineProps({
   blogProp: Object,
 })
 console.log(props.blogProp)
 let RequesUrl = "http://114.132.153.34:9200"
 let blogID = props.blogProp.id;
-let avatarUrl = RequesUrl + props.blogProp.attributes.users_permissions_user
-    .data.attributes.userAvatar.data.attributes.formats.thumbnail.url;
+let avatarUrl = props.blogProp.attributes.users_permissions_user
+    .data.attributes.userAvatar? RequesUrl + props.blogProp.attributes.users_permissions_user
+    .data.attributes.userAvatar.data.attributes.formats.thumbnail.url: loginStatus.defaultAvatar;
 let userName = props.blogProp.attributes.users_permissions_user
     .data.attributes.notUniqueName;
 let userID = props.blogProp.attributes.users_permissions_user
@@ -174,6 +178,10 @@ if (!ifShortBlog) {
   }
 }
 
+let enterPassage = ()=>{
+  emits('enterPassage', props.blogProp)
+}
+
 // console.log(txtPass)
 </script>
 
@@ -226,6 +234,7 @@ if (!ifShortBlog) {
 }
 
 .longBlogBody {
+  cursor: pointer;
   border-radius: 20px;
   margin-top: 6px;
 }
