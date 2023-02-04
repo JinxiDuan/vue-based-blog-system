@@ -102,6 +102,7 @@ console.log(passage)
 
 .title {
   text-align: center;
+  font-size: 2.7em;
 }
 
 .avaTimeBox {
@@ -109,14 +110,14 @@ console.log(passage)
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin: 20px 0 25px 0;
+  margin: 30px 0 35px 0;
 }
 
 .userName {
   margin-left: 10px;
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
   'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
-  font-size: 21px;
+  font-size: 20px;
   font-weight: 500;
 }
 
