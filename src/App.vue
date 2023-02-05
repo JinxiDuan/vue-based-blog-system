@@ -39,6 +39,10 @@ onMounted(() => {
         state.value.phWidth = placeHolder.value.$el.offsetWidth;
         state.value.phLeft = placeHolder.value.$el.getBoundingClientRect().left;
       }
+      window.onscroll = () =>{
+        state.value.phWidth = placeHolder.value.$el.offsetWidth;
+        state.value.phLeft = placeHolder.value.$el.getBoundingClientRect().left;
+      }
       //响应式更新左边栏的元素宽度与left值
     }
 )
@@ -215,6 +219,11 @@ RightColumn部分
 
 2.2日志:
 [Vue warn]: provide() can only be used inside setup().
+
+2.5日志：
+发现elment plus bug:
+affix组件在浏览器窗口大小缩小后，若组件在超出浏览器窗口的位置
+，下滑后该组件会被固定在露出一半的位置，通过滑动左右滚动条无法完全显示该组件，滑动滚动条到顶部即正常
  */
 </script>
 
