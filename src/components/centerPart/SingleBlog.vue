@@ -65,7 +65,7 @@
 
 <script setup>
 import markdownToTxt from "markdown-to-txt";
-import {ref, watch, defineEmits} from "vue";
+import {ref, watch} from "vue";
 import like from '../../assets/like.svg'
 import liked from '../../assets/liked.svg'
 import comment from '../../assets/comment.svg'
