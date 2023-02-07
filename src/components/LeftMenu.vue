@@ -57,7 +57,7 @@ let options = [
   {text: "热门", icon: "HotWater", clickParam: 'h'},
   {text: "最新", icon: "Notification"},
   {text: "我的关注", icon: "Pointer", clickParam: 'f'},
-  {text: "日志", icon: "Calendar"},
+  {text: "日志", icon: "Calendar", clickParam: 's'},
   {text: "README", icon: "Document"}
 ]
 

@@ -44,6 +44,6 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
-/myserver.config.js
+/github.config.js
 /deploy/
 /src/components/testComp.vue
