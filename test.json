@@ -1,14 +1,4 @@
-{
-  "data": {
-    "Title": "create By apitester final",
-    "passage": "Test by apifox",
-    "IfShortBlog": true,
-    "users_permissions_user": {
-      "connect": [
-        {
-          "username": "Steve"
-        }
-      ]
-    }
-  }
-}
+[
+  "wocao",
+  "dwadawd"
+]

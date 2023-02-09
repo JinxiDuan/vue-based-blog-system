@@ -52,7 +52,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import {ElMessage} from "element-plus";
 
-let pageTitle //页面标题
+let pageTitle='最新' //页面标题
 let shortBlog = ref('')//短博文内容
 let AvatarSrc = inject('userAvaRef')
 

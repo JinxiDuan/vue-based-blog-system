@@ -8,12 +8,15 @@ import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 import '/src/assets/fonts/font.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
+import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 
 
 const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
     app.component(key, component)
 }
-app.use(ElementPlus)
+app.use(ElementPlus,{
+    locale: zhCn,
+})
 app.use(mavonEditor)
 app.mount('#app')

@@ -23,6 +23,7 @@ import Passage from "./centerPart/Passage.vue";
 import MyFollow from "./centerPart/MyFollow.vue";
 import Schedule from "./centerPart/Schedule.vue";
 import {computed} from "vue";
+import LatestBlog from "./centerPart/LatestBlog.vue";
 
 const props = defineProps({
   centerComponent: String,
@@ -34,7 +35,8 @@ let ComponentRefs = {
   'l': loginRegis,
   'p': Passage,
   'f': MyFollow,
-  's': Schedule
+  's': Schedule,
+  'lb': LatestBlog
 }
 
 const holderSpan = computed(() => {
