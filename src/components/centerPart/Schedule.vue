@@ -20,7 +20,7 @@
       </template>
     </el-calendar>
     <div class="addArrange">
-      <el-input v-model="arrangeText" style="margin-right: 5px">
+      <el-input v-model="arrangeText" style="margin-right: 5px" @keyup.enter="addArrange">
 
       </el-input>
       <el-button :icon="'Plus'" @click="addArrange">
@@ -63,7 +63,7 @@ if (loginStatus.logonStatus) {
   }
 }
 
-axios.get("http://114.132.153.34:9200/api/schedules",
+axios.get("http://114.132.153.34:9200/api/schedules?pagination[pageSize]=500",
     {
       header: headerConfig,
     }
@@ -214,7 +214,8 @@ const deleteArrange = (index) => {
 .todoItem {
   color: #2c2c2c;
   margin-top: 5px;
-  height: 40px;
+  min-height: 40px;
+  line-height: 28px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

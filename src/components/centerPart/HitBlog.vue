@@ -4,9 +4,10 @@
       <div style="font-weight: bold;font-size: 24px">
         {{ pageTitle ? pageTitle : "热门" }}
       </div>
-      <el-icon :size="'large'">
-        <MagicStick/>
-      </el-icon>
+      <el-button circle text :size="'large'" @click="getNewBlog">
+        <el-icon :size="'large'"><Refresh /></el-icon>
+
+      </el-button>
     </div>
     <div class="postShortBox">
       <el-avatar
