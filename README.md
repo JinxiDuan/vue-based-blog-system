@@ -29,6 +29,8 @@
 |:---------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------:|
 | <img src="https://cdn.iconscout.com/icon/free/png-256/vuejs-1175052.png" style="width: 100px;height: auto"><br/>Vue 3 | <img src="https://avatars.githubusercontent.com/u/65625612?s=280&v=4" style="width: 100px;height: auto"><br/>Vite | <img src="https://element-plus.gitee.io/images/element-plus-logo.svg"><br/>Element Plus | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Axios_%28computer_library%29_logo.svg/1280px-Axios_%28computer_library%29_logo.svg.png" style="width: 100px;height: auto"><br/>Axios | <img src="https://strapi.io/assets/strapi-logo-dark.svg" style="width: 100px;height: auto"><br/>strapi<br/>Community Edition | <img src="https://vitest.dev/logo-shadow.svg" style="width: 100px;height: auto"><br/>Vitest |
 
+## 其他工具和依赖 Other dependencies
+
 # 部署与使用方法 Deploy
 
 # 总体布局与灵感 Overall Layout and Inspiration
