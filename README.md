@@ -25,7 +25,7 @@
 
 # 技术栈和工具使用 Technologies and Tool Used
 
-| 框架                                                                                                                    | 构建工具                                                                                                                                                  | 组件库(CSS框架)                                                                              | 网络请求库                                                                                                                                                                                                    | 后端API(可选)                                                                                                                    | 测试框架(可选)                                                                                    |
+|                                                          框架                                                           |                                                                         构建工具                                                                          |                                       组件库(CSS框架)                                        |                                                                                                  网络请求库                                                                                                   |                                                          后端API(可选)                                                           |                                          测试框架(可选)                                           |
 |:---------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------:|
 | <img src="https://cdn.iconscout.com/icon/free/png-256/vuejs-1175052.png" style="width: 100px;height: auto"><br/>Vue 3 | <img title="" src="https://avatars.githubusercontent.com/u/65625612?s=280&v=4" alt="" style="width: 100px;height: auto" data-align="inline"><br/>Vite | <img src="https://element-plus.gitee.io/images/element-plus-logo.svg"><br/>Element Plus | <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Axios_%28computer_library%29_logo.svg/1280px-Axios_%28computer_library%29_logo.svg.png" style="width: 100px;height: auto"><br/>Axios | <img src="https://strapi.io/assets/strapi-logo-dark.svg" style="width: 100px;height: auto"><br/>strapi<br/>Community Edition | <img src="https://vitest.dev/logo-shadow.svg" style="width: 100px;height: auto"><br/>Vitest |
 
@@ -78,24 +78,36 @@ vite build || npm run build
 
 ```javascript
 export default defineConfig({
-  plugins: [vue()],
-  base: '/',//<----修改base选项来修改公共基础路径
-  build: {
-    outDir: 'deploy',//<----修改outDir选项来修改输出目录
-  }
-  // resolve: { alias: { 'vue': 'vue/dist/vue.esm-bundler.js' } }
+    plugins: [vue()],
+    base: '/',//<----修改base选项来修改公共基础路径
+    build: {
+        outDir: 'deploy',//<----修改outDir选项来修改输出目录
+    }
+    // resolve: { alias: { 'vue': 'vue/dist/vue.esm-bundler.js' } }
 })
 ```
 
-关于自动拉取构建与部署静态站点，请参考Vite官网文档中关于[部署静态站点](https://cn.vitejs.dev/guide/static-deploy.html)的说明。
+关于自动拉取构建与部署静态站点，请参考Vite官网文档中关于[部署静态站点](https://cn.vitejs.dev/guide/static-deploy.html)
+的说明。
 
-请注意，无论您使用何种静态站点部署与托管服务，请务必确保fork本repo后，将**fork的仓库**导入。
+请注意，无论您使用何种静态站点部署与托管服务，请务必确保**fork本repo**后，将**fork的仓库**导入。
 
 # 总体布局与灵感 Overall Layout and Inspiration
 
-我的博客页面主要采用三栏式布局，中间一栏作为主要内容区域
+我的博客页面主要采用三栏式布局,中间一栏作为主要内容区域，左侧为菜单栏，右侧为附加/工具栏。这样布局设计主要是受到Twitt*
+r布局方式的启发，这种布局简洁易用，也易于展示较新的信息流，后续加入响应式布局也比较方便。
+
+![mainPrev](http://114.132.153.34:9200/uploads/2023_02_12_230437_698adf1466.png?updated_at=2023-02-12T15:06:42.677Z)
+
+**关于灵感**
+
+起初我是打算使用个人技术博客常用的以板块进行分区的布局方式，即根据博文所属的不同技术分区进行归类，大致用UI模拟了一下发现这样主页比较冗杂，不便使用。
+
+不仅如此，我们的作业要求构建一个支持多人使用的博客系统，即他人也可以通过博客平台分享自己的博文，用户之间可以互动，我转念一想这不就是小蓝鸟的那种形式吗，于是借鉴了这样的三栏式布局，但也根据相应的需求调整了比例与具体内容。
 
 # 左菜单栏 Left Menu
+
+左侧的菜单栏是相对比较静态的页面，主要承担着整个博客项目中Navigator的角色。
 
 # 各二级页面 Secondary Page
 
